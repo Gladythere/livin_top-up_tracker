@@ -5,7 +5,7 @@ name: Run personal_e-money_tracker
 # Controls when the workflow will run
 on:
   schedule:
-    - cron: '30 16 * * *'  # jalan tiap hari jam (23.55 WIB)
+    - cron: '30 16 * * *'
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
