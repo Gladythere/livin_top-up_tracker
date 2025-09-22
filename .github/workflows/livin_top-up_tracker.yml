@@ -37,4 +37,4 @@ jobs:
           EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
           SPREADSHEET_URL: ${{ secrets.SPREADSHEET_URL }}
           GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
-        run: python personal_e-money_tracker.py
+        run: python livin_top-up_tracker.py
