@@ -14,7 +14,7 @@ import email
 EMAIL = os.getenv("EMAIL_ACCOUNT")
 PASSWORD = os.getenv("EMAIL_PASSWORD")
 SPREADSHEET_URL = os.getenv("SPREADSHEET_URL")
-SPREADSHEET_NAME = "E-money Tracker"
+SPREADSHEET_NAME = "Livin Top-Up Tracker"
 WORKSHEET_NAME = "Data"
 
 # ================= SERVICE ACCOUNT JSON =================
