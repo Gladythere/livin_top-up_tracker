@@ -2,4 +2,5 @@ imapclient
 pyzmail36
 pandas
 gspread
+beautifulsoup4
 google-auth
