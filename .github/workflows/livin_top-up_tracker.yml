@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: Run personal_e-money_tracker
+name: Run livin_top-up_tracker
 
 # Controls when the workflow will run
 on:
