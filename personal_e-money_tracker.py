@@ -72,7 +72,7 @@ with IMAPClient('imap.gmail.com') as client:
 
         if re.search(r"top[-\s]?up", subject, re.IGNORECASE):
             # ✅ Parsing email pakai modul email (bawaan Python)
-            msg = pyzmail.PyzMessage.factory(raw_data[uid][b'BODY[]'])
+            msg = email.message_from_bytes(raw_data[uid][b'BODY[]'])
 
             body = ""
             for part in msg.walk():
