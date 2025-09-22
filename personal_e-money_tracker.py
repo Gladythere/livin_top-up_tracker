@@ -8,6 +8,7 @@ from datetime import datetime
 import gspread
 from google.oauth2.service_account import Credentials
 from zoneinfo import ZoneInfo
+import email
 
 # ================= CONFIG =================
 EMAIL = os.getenv("EMAIL_ACCOUNT")
