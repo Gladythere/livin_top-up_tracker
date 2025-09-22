@@ -34,6 +34,15 @@ def extract_ref_number(text):
     match = re.search(r'\b\d{18}\b', text)
     return match.group(0) if match else None
 
+def extract_provider(text):
+    """Cari Penyedia Jasa -> ambil dua baris: nama & nomor kartu"""
+    match = re.search(r'Penyedia Jasa\s*[:\-]?\s*([^\n\r]+)\s+([^\n\r]+)', text, re.IGNORECASE)
+    if match:
+        provider = match.group(1).strip()
+        number = match.group(2).strip()
+        return provider, number
+    return None, None
+
 # ================= EMAIL SCRAPER =================
 today_str = datetime.now(ZoneInfo("Asia/Jakarta")).strftime('%Y-%m-%d')  # ✅ WIB
 results = []
@@ -42,7 +51,11 @@ with IMAPClient('imap.gmail.com') as client:
     client.login(EMAIL, PASSWORD)
     client.select_folder('INBOX')
 
+    # Cari semua email dari Livin Mandiri
     messages = client.search(['FROM', 'noreply.livin@bankmandiri.co.id'])
+    print(f"Jumlah email dari Livin: {len(messages)}")
+
+    # Ambil subject + body
     raw_data = client.fetch(messages, ['BODY[]', 'ENVELOPE'])
 
     for uid in messages:
@@ -57,23 +70,32 @@ with IMAPClient('imap.gmail.com') as client:
             continue
 
         if re.search(r"top[-\s]?up", subject, re.IGNORECASE):
+            # ✅ Parsing email pakai modul email (bawaan Python)
             msg = pyzmail.PyzMessage.factory(raw_data[uid][b'BODY[]'])
 
-            if msg.text_part:
-                body = msg.text_part.get_payload().decode(msg.text_part.charset)
-            elif msg.html_part:
-                body = msg.html_part.get_payload().decode(msg.html_part.charset)
-            else:
-                body = ""
+            body = ""
+            for part in msg.walk():
+                content_type = part.get_content_type()
+                if content_type == "text/html":  # prefer HTML
+                    html_body = part.get_payload(decode=True).decode(part.get_content_charset() or "utf-8", errors="ignore")
+                    soup = BeautifulSoup(html_body, "html.parser")
+                    body = soup.get_text(separator="\n")
+                    break
+                elif content_type == "text/plain" and not body:
+                    body = part.get_payload(decode=True).decode(part.get_content_charset() or "utf-8", errors="ignore")
 
+            # ✅ Ekstraksi data
             nominal = extract_nominal(body)
             ref_number = extract_ref_number(body)
-
+            provider, provider_number = extract_provider(body)
+            
             results.append([
                 email_date_wib.strftime('%Y-%m-%d %H:%M:%S'),  # ✅ sudah WIB
                 subject,
                 nominal,
-                ref_number
+                ref_number,
+                provider,
+                provider_number
             ])
 
 # ================= APPEND KE GOOGLE SHEETS =================
