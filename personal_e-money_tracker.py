@@ -2,7 +2,7 @@
 import os
 import json
 from imapclient import IMAPClient
-import pyzmail
+from bs4 import BeautifulSoup
 import re
 from datetime import datetime
 import gspread
